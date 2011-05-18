@@ -382,6 +382,15 @@ class HTTP_WebDAV_Server_Zarafa extends HTTP_WebDAV_Server
 		$ret["session"] = $session;
 		$ret["store"] = $store;
 		$ret["contacts"] = $contacts;
+
+		// ZCP 7 and up know unicode...
+		$supportmask = mapi_getprops($store, array(PR_STORE_SUPPORT_MASK));
+		if (isset($supportmask[PR_STORE_SUPPORT_MASK]) && ($supportmask[PR_STORE_SUPPORT_MASK] & STORE_UNICODE_OK)) {
+			$ret["unicode_store"] = true;
+  			setlocale(LC_CTYPE,'en_US.utf-8');
+		}
+		// END ZCP7 and up know unicode
+		
 		return $ret;
 	}
 
@@ -398,33 +407,35 @@ class HTTP_WebDAV_Server_Zarafa extends HTTP_WebDAV_Server
 
 		//// GENERAL INFORMATION
 		$vcard->setName(
-				$this->toUTF8($contactprops[PR_SURNAME]), 
-				$this->toUTF8($contactprops[PR_GIVEN_NAME]), 
-				$this->toUTF8($contactprops[PR_MIDDLE_NAME]), 
-				$this->toUTF8($contactprops[PR_DISPLAY_NAME_PREFIX]), 
+				$this->toUTF8(isset($contactprops[PR_SURNAME]) 				? $contactprops[PR_SURNAME] 			: ''), 
+				$this->toUTF8(isset($contactprops[PR_GIVEN_NAME]) 			? $contactprops[PR_GIVEN_NAME]			: ''), 
+				$this->toUTF8(isset($contactprops[PR_MIDDLE_NAME]) 			? $contactprops[PR_MIDDLE_NAME]			: ''), 
+				$this->toUTF8(isset($contactprops[PR_DISPLAY_NAME_PREFIX]) 	? $contactprops[PR_DISPLAY_NAME_PREFIX] : ''), 
 				'' // Suffix 
 			       ); 
 		$vcard->addParam('CHARSET',$charset);
-		$vcard->setFormattedName($this->toUTF8($contactprops[PR_DISPLAY_NAME])); 
+		$vcard->setFormattedName($this->toUTF8(isset($contactprops[PR_DISPLAY_NAME]) ? $contactprops[PR_DISPLAY_NAME] : '')); 
 		$vcard->addParam('CHARSET',$charset);
 
-		$v = $contactprops[PR_BIRTHDAY			]; if ($v)  $vcard->setBirthday		($this->toUTF8(date('Y-m-d', $v)));
-		$v = $contactprops[PR_PROFESSION		]; if ($v)  $vcard->setRole		($this->toUTF8($v));
-		$v = $contactprops[PR_NICKNAME			]; if ($v)  $vcard->addNickname		($this->toUTF8($v));
-		$v = $contactprops[PR_COMPANY_NAME		]; if ($v)  $vcard->addOrganization	($this->toUTF8($v)); //$this->toUTF8($contactprops[PR_DEPARTMENT_NAME] // how to append this as outlook does and prevent escaping of ';' ??
-		$v = $contactprops[PR_TITLE			]; if ($v)  $vcard->setTitle		($this->toUTF8($v));
-		$v = $contactprops[$this->specialprops["email1"]]; if ($v)  $vcard->addEmail		($this->toUTF8($v));
-		$v = $contactprops[PR_BUSINESS_HOME_PAGE	]; if ($v){ $vcard->setUrl		($this->toUTF8($v));	$vcard->addParam('TYPE','WORK'); }
-		$v = $contactprops[PR_COMMENT			]; if ($v)  $vcard->setNote		($this->toUTF8($v));
+		if (isset($contactprops[PR_BIRTHDAY])) 						$vcard->setBirthday			($this->toUTF8(date('Y-m-d', $contactprops[PR_BIRTHDAY])));
+		if (isset($contactprops[PR_PROFESSION])) 					$vcard->setRole				($this->toUTF8($contactprops[PR_PROFESSION]));
+		if (isset($contactprops[PR_NICKNAME]))						$vcard->addNickname			($this->toUTF8($contactprops[PR_NICKNAME]));
+		if (isset($contactprops[PR_COMPANY_NAME]))  				$vcard->addOrganization		($this->toUTF8($contactprops[PR_COMPANY_NAME])); //$this->toUTF8($contactprops[PR_DEPARTMENT_NAME] // how to append this as outlook does and prevent escaping of ';' ??
+		if (isset($contactprops[PR_TITLE]))	  						$vcard->setTitle			($this->toUTF8($contactprops[PR_TITLE]));
+		if (isset($this->specialprops["email1"]) &&
+			isset($contactprops[$this->specialprops["email1"]])) 	$vcard->addEmail			($this->toUTF8($contactprops[$this->specialprops["email1"]]));
+		if (isset($contactprops[PR_BUSINESS_HOME_PAGE])) { 			$vcard->setUrl				($this->toUTF8($contactprops[PR_BUSINESS_HOME_PAGE]));	$vcard->addParam('TYPE','WORK'); }
+		if (isset($contactprops[PR_COMMENT]))						$vcard->setNote				($this->toUTF8($contactprops[PR_COMMENT]));
 
 		//// HOME ADDRESS
-		$v1 = $contactprops[PR_HOME_ADDRESS_POST_OFFICE_BOX	];
-		$v2 = $contactprops[PR_HOME_ADDRESS_STREET		];
-		$v3 = $contactprops[PR_HOME_ADDRESS_CITY		];
-		$v4 = $contactprops[PR_HOME_ADDRESS_STATE_OR_PROVINCE	];
-		$v5 = $contactprops[PR_HOME_ADDRESS_POSTAL_CODE		];
-		$v6 = $contactprops[PR_HOME_ADDRESS_COUNTRY		];
-		if ($v1 || $v2 || $v3 || $v4 || $v5 || $v6) {
+		$v1 = $v2 = $v3 = $v4 = $v5 = $v6 = '';
+		if (isset($contactprops[PR_HOME_ADDRESS_POST_OFFICE_BOX]))		$v1 = $contactprops[PR_HOME_ADDRESS_POST_OFFICE_BOX];
+		if (isset($contactprops[PR_HOME_ADDRESS_STREET]))				$v2 = $contactprops[PR_HOME_ADDRESS_STREET];
+		if (isset($contactprops[PR_HOME_ADDRESS_CITY])) 				$v3 = $contactprops[PR_HOME_ADDRESS_CITY];
+		if (isset($contactprops[PR_HOME_ADDRESS_STATE_OR_PROVINCE])) 	$v4 = $contactprops[PR_HOME_ADDRESS_STATE_OR_PROVINCE];
+		if (isset($contactprops[PR_HOME_ADDRESS_POSTAL_CODE])) 			$v5 = $contactprops[PR_HOME_ADDRESS_POSTAL_CODE];
+		if (isset($contactprops[PR_HOME_ADDRESS_COUNTRY])) 				$v6 = $contactprops[PR_HOME_ADDRESS_COUNTRY];
+		if ($v1!='' || $v2!='' || $v3!='' || $v4!='' || $v5!='' || $v6!='') {
 			$vcard->addAddress(
 					$this->toUTF8($v1), 
 					'', // extended address
@@ -437,13 +448,18 @@ class HTTP_WebDAV_Server_Zarafa extends HTTP_WebDAV_Server
 		}
 
 		//// WORK ADDRESS 
-		$v1 = ''; // business post office pox (where to get this from?)
-		$v2 = $contactprops[$this->specialprops["business_street"]	];
-		$v3 = $contactprops[$this->specialprops["business_city"]	]; 
-		$v4 = $contactprops[$this->specialprops["business_state"]	]; 
-		$v5 = $contactprops[$this->specialprops["business_postcode"]	]; 
-		$v6 = $contactprops[$this->specialprops["business_country"]	];
-		if ($v1 || $v2 || $v3 || $v4 || $v5 || $v6) {
+		$v1 = $v2 = $v3 = $v4 = $v5 = $v6 = ''; // business post office pox (where to get this from?)
+		if (isset($this->specialprops["business_street"]) &&
+			isset($contactprops[$this->specialprops["business_street"]])) 	$v2 = $contactprops[$this->specialprops["business_street"]];
+		if (isset($this->specialprops["business_city"]) &&
+			isset($contactprops[$this->specialprops["business_city"]])) 	$v3 = $contactprops[$this->specialprops["business_city"]]; 
+		if (isset($this->specialprops["business_state"]) &&
+			isset($contactprops[$this->specialprops["business_state"]])) 	$v4 = $contactprops[$this->specialprops["business_state"]]; 
+		if (isset($this->specialprops["business_postcode"]) &&
+			isset($contactprops[$this->specialprops["business_postcode"]])) $v5 = $contactprops[$this->specialprops["business_postcode"]]; 
+		if (isset($this->specialprops["business_country"]) &&
+			isset($contactprops[$this->specialprops["business_country"]]))	$v6 = $contactprops[$this->specialprops["business_country"]];
+		if ($v1!='' || $v2!='' || $v3!='' || $v4!='' || $v5!='' || $v6!='') {
 			$vcard->addAddress(
 					$this->toUTF8($v1), 
 					'', // extended address
@@ -456,14 +472,14 @@ class HTTP_WebDAV_Server_Zarafa extends HTTP_WebDAV_Server
 		}
 
 		//// PHONE NUMBERS
-		$v = $contactprops[PR_HOME_TELEPHONE_NUMBER	]; if ($v){ $vcard->addTelephone	($this->toUTF8($v));		$vcard->addParam('TYPE', 'HOME');					}
-		$v = $contactprops[PR_BUSINESS_TELEPHONE_NUMBER	]; if ($v){ $vcard->addTelephone	($this->toUTF8($v));		$vcard->addParam('TYPE', 'WORK');					}
-		$v = $contactprops[PR_HOME2_TELEPHONE_NUMBER	]; if ($v){ $vcard->addTelephone	($this->toUTF8($v));		$vcard->addParam('TYPE', 'HOME');					}
-		$v = $contactprops[PR_BUSINESS2_TELEPHONE_NUMBER]; if ($v){ $vcard->addTelephone	($this->toUTF8($v));		$vcard->addParam('TYPE', 'WORK');					}
-		$v = $contactprops[PR_MOBILE_TELEPHONE_NUMBER	]; if ($v){ $vcard->addTelephone	($this->toUTF8($v));		$vcard->addParam('TYPE', 'CELL');					}
-		$v = $contactprops[PR_HOME_FAX_NUMBER		]; if ($v){ $vcard->addTelephone	($this->toUTF8($v));		$vcard->addParam('TYPE', 'HOME');	$vcard->addParam('TYPE','FAX');	}
-		$v = $contactprops[PR_BUSINESS_FAX_NUMBER	]; if ($v){ $vcard->addTelephone	($this->toUTF8($v));		$vcard->addParam('TYPE', 'WORK');	$vcard->addParam('TYPE','FAX');	}
-		$v = $contactprops[PR_OTHER_TELEPHONE_NUMBER	]; if ($v){ $vcard->addTelephone	($this->toUTF8($v));											}
+		if (isset($contactprops[PR_HOME_TELEPHONE_NUMBER]))			{ $vcard->addTelephone	($this->toUTF8($contactprops[PR_HOME_TELEPHONE_NUMBER]));		$vcard->addParam('TYPE', 'HOME');									}
+		if (isset($contactprops[PR_BUSINESS_TELEPHONE_NUMBER]))		{ $vcard->addTelephone	($this->toUTF8($contactprops[PR_BUSINESS_TELEPHONE_NUMBER]));	$vcard->addParam('TYPE', 'WORK');									}
+		if (isset($contactprops[PR_HOME2_TELEPHONE_NUMBER]))		{ $vcard->addTelephone	($this->toUTF8($contactprops[PR_HOME2_TELEPHONE_NUMBER]));		$vcard->addParam('TYPE', 'HOME');									}
+		if (isset($contactprops[PR_BUSINESS2_TELEPHONE_NUMBER]))	{ $vcard->addTelephone	($this->toUTF8($contactprops[PR_BUSINESS2_TELEPHONE_NUMBER]));	$vcard->addParam('TYPE', 'WORK');									}
+		if (isset($contactprops[PR_MOBILE_TELEPHONE_NUMBER]))		{ $vcard->addTelephone	($this->toUTF8($contactprops[PR_MOBILE_TELEPHONE_NUMBER]));		$vcard->addParam('TYPE', 'CELL');									}
+		if (isset($contactprops[PR_HOME_FAX_NUMBER]))				{ $vcard->addTelephone	($this->toUTF8($contactprops[PR_HOME_FAX_NUMBER]));				$vcard->addParam('TYPE', 'HOME');	$vcard->addParam('TYPE','FAX');	}
+		if (isset($contactprops[PR_BUSINESS_FAX_NUMBER]))			{ $vcard->addTelephone	($this->toUTF8($contactprops[PR_BUSINESS_FAX_NUMBER]));			$vcard->addParam('TYPE', 'WORK');	$vcard->addParam('TYPE','FAX');	}
+		if (isset($contactprops[PR_OTHER_TELEPHONE_NUMBER]))		{ $vcard->addTelephone	($this->toUTF8($contactprops[PR_OTHER_TELEPHONE_NUMBER]));																			}
 
 		return $vcard;
 	}
@@ -475,6 +491,10 @@ class HTTP_WebDAV_Server_Zarafa extends HTTP_WebDAV_Server
 	 * @return	string	Encoded string.
 	 */
 	function toUTF8($str) {
+		// ZCP 7 supports unicode...
+		if ($this->zarafa["unicode_store"] == true) return $str;
+		// END ZCP 7 supports unicode...
+
 		return utf8_encode($str);
 	}
 
