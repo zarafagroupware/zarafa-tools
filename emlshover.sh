@@ -19,8 +19,12 @@ FMAIL=`echo $FROM | sed 's/@/_at_/'`
 # Original subject of the received message
 SUBJECT=$2
 
+# Unix time to add to the file
 UNIXTIME=`date +%s`
-FILENAME="/tmp/email-$UNIXTIME-$RANDOM-$FMAIL.eml"
+# Where to save the file
+FILEPATH="/tmp"
+# File location with randomization
+FILENAME="$FILEPATH/email-$UNIXTIME-$RANDOM-$FMAIL.eml"
 
 # Shove it into the file and gzip the file!
 gzip -c >$FILENAME > $FILENAME.gz
