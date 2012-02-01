@@ -4,6 +4,7 @@
 # Script by Phantium
 # Written: 01-30-2012
 # Return raw EML to sender, made for use with Exim
+###
 # Include the following in your .forward file:
 # if $h_to matches "eml@yourdomain.com" then pipe "/usr/bin/returneml $reply_address $header_subject" endif
 # See http://www.exim.org/exim-html-current/doc/html/spec_html/filter_ch03.html for more information about rules
