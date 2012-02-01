@@ -6,6 +6,8 @@
 # Return raw EML to sender, made for use with Exim
 ###
 # Include the following in your .forward file:
+# The first line in your exim .forward should be: # Exim filter
+# Next add the following rule in order to execute the shell script
 # if $h_to matches "eml@yourdomain.com" then pipe "/usr/bin/returneml $reply_address $header_subject" endif
 # See http://www.exim.org/exim-html-current/doc/html/spec_html/filter_ch03.html for more information about rules
 ###
