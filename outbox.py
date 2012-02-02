@@ -29,7 +29,6 @@ s = OpenECSession(sys.argv[1], '', 'file:///var/run/zarafa')
 st = GetDefaultStore(s)
 
 outbox = st.GetProps([PR_IPM_OUTBOX_ENTRYID], 0)[0].Value
-
 folder = st.OpenEntry(outbox, None, 0)
 table = folder.GetContentsTable(0)
 table.SetColumns([PR_SUBJECT, 0x67110003, PR_CREATION_TIME, PR_ENTRYID], 0)
