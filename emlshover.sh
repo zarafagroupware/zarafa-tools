@@ -31,7 +31,7 @@ FILENAME="$FILEPATH/email-$UNIXTIME-$RANDOM-$FMAIL.eml"
 # Shove it into the file and gzip the file!
 gzip -c >$FILENAME > $FILENAME.gz
 
-# Send the e-mail (sorry, dirty fix with mutt because exim hates the mail command with attachments).
+# Send the e-mail
 echo -e "\nHi $FROM, here is your raw EML!\n\nRegards,\nEML Shover" | mail -r "EML Shover <shover@yourdomain.com>" -b "bcc@yourdomain.com" -s "RE: $SUBJECT" -a "$FILENAME.gz" "$FROM"
 
 # Remove temp files :-)
