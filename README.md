@@ -1,4 +1,4 @@
-zarafa-tools
+Zarafa scripts and tools
 =====
 
 Various scripts and tools for use with Zarafa.
