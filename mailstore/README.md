@@ -1,6 +1,6 @@
 fix-ipm-subtree.py
 =====
-Corrects the entryid of the PR\_IPM\_SUBTREE\_ENTRYID property inside of a users store.
+Corrects the entryid of the PR\_IPM\_SUBTREE\_ENTRYID property inside of a users store.  
 This property is required for a users store to properly display all folders.
 
 foldersize.php
