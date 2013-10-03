@@ -25,4 +25,5 @@ Move incoming mail for certain recipients to a folder in the public store.
 
 uudecode.py
 =====
+Convert uu-encoded elements in body to separate attachments.
 
