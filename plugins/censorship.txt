@@ -1,0 +1,7 @@
+giraffe
+elephant
+cow
+chicken
+fox
+panther
+lion
