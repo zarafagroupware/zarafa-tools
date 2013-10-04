@@ -1,3 +1,10 @@
+License
+=====
+Files in this folder are licensed under the Affero General Public License version 3,  
+the license can be found in file LICENSE-AGPLv3, or any later version of the AGPL,  
+unless otherwise noted.
+
+
 BMP2PNG.py
 =====
 Converts BMP images in incoming emails to PNG format.
