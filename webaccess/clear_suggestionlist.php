@@ -117,7 +117,7 @@ function clearSuggestionList($session, $store, $userName)
         return false;
     }
 
-    // we are not checking here that proeprty exists or not because it could happen that getprops will return
+    // we are not checking here that property exists or not because it could happen that getprops will return
     // MAPI_E_NOT_ENOUGH_MEMORY for very large property, if property does not exists then it will be created
 
     // remove property data, overwirte existing data with a blank string (PT_STRING8)
