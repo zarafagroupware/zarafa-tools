@@ -13,11 +13,6 @@ zarafa-cachestat.py
 =====
 Print the cache usage of zarafa-server with usage and hit ratios.
 
-deletemessages.py
-=====
-Deletes messages in a given folder.  
-E.g. python deletemessages.py -u john -f Inbox -n 10
-
 ldap\_export.sh
 ====
 Searches the ldap tree configured in server.cfg and ldap.cfg.

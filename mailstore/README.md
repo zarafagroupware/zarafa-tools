@@ -34,3 +34,9 @@ Removes duplicate messages from a users mailstore.
 resetfolders.py
 =====
 Resets a users mailstore folders to the default folders as you would otherwise do with OUTLOOK.EXE /resetfolders
+
+deletemessages.py
+=====
+Deletes messages in a given folder. 
+E.g. python deletemessages.py -u john -f Inbox -n 10
+
