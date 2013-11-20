@@ -33,7 +33,7 @@ class JabberAuth {
 
     function JabberAuth()
     {
-        @define_syslog_variables();
+        if (version_compare(phpversion(), "5.4.0", "<")) { @define_syslog_variables(); }
         @openlog("pipe-auth", LOG_NDELAY, LOG_SYSLOG);
         
         if($this->debug) {
