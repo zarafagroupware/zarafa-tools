@@ -23,3 +23,8 @@ write\_webapp-settings.py
 Writes custom settings for the given user.  
 Usage: ./write\_webapp-settings.py username
 
+jabberauth.php
+=====
+Script to authenticate a user to ejabberd after logging in to the Zarafa WebApp
+https://community.zarafa.com/pg/plugins/project/6450/developer/milo/zarafa-webapp-ejabberd-authentication-script
+
