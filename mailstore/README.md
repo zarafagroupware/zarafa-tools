@@ -37,6 +37,6 @@ Resets a users mailstore folders to the default folders as you would otherwise d
 
 deletemessages.py
 =====
-Deletes messages in a given folder. 
+Deletes messages in a given folder.  
 E.g. python deletemessages.py -u john -f Inbox -n 10
 
