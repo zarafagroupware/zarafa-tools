@@ -40,3 +40,9 @@ deletemessages.py
 Deletes messages in a given folder.  
 E.g. python deletemessages.py -u john -f Inbox -n 10
 
+full-restore-public.sh
+=====
+This script is for licensed installations for use with zarafa-restore.  
+It allows you to restore a public stores bricklevel backup.  
+Usage: ./full-restore-public.sh <bricklevel name> e.g. Public.
+
