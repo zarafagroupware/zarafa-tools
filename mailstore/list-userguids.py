@@ -20,9 +20,14 @@ def GetGuids(session, users = None, flags = 0):
             storeid = ems.CreateStoreEntryID(None, user, 0)
             store = session.OpenMsgStore(0, storeid, IID_IMsgStore, flags)
             storeguid = HrGetOneProp(store, PR_STORE_RECORD_KEY).Value.encode('hex').upper()
+
+        # The following excepts are mainly to prevent errors in multi-server setups.
+        # This script will be made SSL capable in the future.
         except MAPIErrorNotFound:
             continue
         except MAPIErrorLogonFailed:
+            continue
+        except MAPIErrorNetworkError:
             continue
         yield storeguid
 
