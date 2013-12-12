@@ -22,6 +22,8 @@ def GetGuids(session, users = None, flags = 0):
             storeguid = HrGetOneProp(store, PR_STORE_RECORD_KEY).Value.encode('hex').upper()
         except MAPIErrorNotFound:
             continue
+        except MAPIErrorLogonFailed:
+            continue
         yield storeguid
 
 users = []
