@@ -1,0 +1,62 @@
+##########
+# Multi-server settings
+
+# Object settings
+ldap_server_type_attribute_value = zarafa-server
+
+# Users will be created on this named server
+# Optional, default zarafaUserServer
+ldap_user_server_attribute = zarafaUserServer
+
+# The public store of the company will be created on this named server
+# Optional, default zarafaCompanyServer
+ldap_company_server_attribute = zarafaCompanyServer
+
+# Optional
+# Active directory: zarafaHostAddress
+# LDAP: ipHostNumber
+ldap_server_address_attribute = aRecord
+
+# Optional, default = zarafaHttpPort
+# Active directory: zarafaHttpPort
+# LDAP: zarafaHttpPort
+ldap_server_http_port_attribute = zarafaHttpPort
+
+# Optional, default = zarafaSslPort
+# Active directory: zarafaSslPort
+# LDAP: zarafaSslPort
+ldap_server_ssl_port_attribute = zarafaSslPort
+
+# Optional, default = zarafaFilePath
+# Active directory: zarafaFilePath
+#LDAP: zarafaFilePath
+ldap_server_file_path_attribute = zarafaFilePath
+
+# Determines if a server contains the public store of a non-hosted
+# environment. Only one server is allowed to host the public store.
+# Optional, default = zarafaContainsPublic
+# Active directory: zarafaContainsPublic
+# LDAP: zarafaContainsPublic
+ldap_server_contains_public_attribute = zarafaContainsPublic
+
+# The Proxy URL of the node; the node must be available to clients
+# using this Proxy URL if the server detects that original connection
+# was received via a proxy. See server.cfg(5)'s proxy_header setting
+ldap_server_proxy_path_attribute = zarafaProxyURL
+
+# Search for servers using this LDAP filter.  See ldap_search(3) or RFC
+# 2254 for details on the filter syntax.
+# Optional, default = empty (match everything)
+# For active directory, use:
+#   (objectCategory=Computer)
+# For LDAP with posix users, use:
+#   
+ldap_server_search_filter = 
+
+# Unique user id to find the server
+# Required
+# For active directory, use:
+#    CN
+# For LDAP with posixAccount, use:
+#    cn
+ldap_server_unique_attribute = cn
