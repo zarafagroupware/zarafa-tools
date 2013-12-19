@@ -12,4 +12,4 @@ Updates the existing (single-server) users inside of the Univention LDAP with th
 
 ldap.cfg-additions
 =====
-Diff of the needed changes to /etc/zarafa/ldap.cfg to configura a Multi-server setup.
+Text file containing the needed changes to /etc/zarafa/ldap.cfg to configure a Multi-server setup.
