@@ -23,3 +23,6 @@ Usage:
 - ldap_export.sh -u [user] - Queries ldap for ([$ldap_loginname_attribute]=[user])
 - ldap_export.sh -q "[custom query]" - Queries ldap with [custom query]
 
+check-out-of-office.py
+=====
+Creates list of all users with a simple false/true message concerning the out of office message state.
