@@ -19,14 +19,12 @@ def read_settings():
 
         try:
                 settings = st.OpenProperty(PR_EC_WEBACCESS_SETTINGS_JSON, IID_IStream, 0, 0)
-                data = settings.Read(4096)
+                data = settings.Read(40960)
         except:
                 print 'User has not used WebApp yet, no settings property exists.'
 
         if not data:
                 data = 'No settings present.'
-        elif data == '{"settings":{"zarafa":{"v1":{"contexts":{"mail":[]}}}}}':
-                print 'Default settings present, user has not yet logged in.'
         else:
                 print data
 
