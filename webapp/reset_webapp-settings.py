@@ -17,12 +17,9 @@ def reset_settings():
         settings = st.OpenProperty(PR_EC_WEBACCESS_SETTINGS_JSON, IID_IStream, 0, MAPI_MODIFY|MAPI_CREATE)
         settings.SetSize(0)
         settings.Seek(0, STREAM_SEEK_END)
-        writesettings = settings.Write('{}')
+        writesettings = settings.Write('')
 
-        if writesettings:
-                print "Settings for user '%s' were reset." % sys.argv[1]
-        else:
-                print "Settings for user '%s' failed to be reset." % sys.argv[1]
+        print "Settings for user '%s' were reset." % sys.argv[1]
         settings.Commit(0)
 
 if __name__ == '__main__':
