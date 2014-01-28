@@ -87,13 +87,10 @@ def DataMover(ipmsub, source, destination, delete = 0):
             return
     if int(delete):
         try:
-            if srcfld:
-                print "Deleting source folder '%s'" % source
-                top.DeleteFolder(srcfld, 0, None, DEL_FOLDERS)
-            else:
-                print "Cannot delete source folder '%s'" % source
-                return
+            print "Deleting source folder '%s'" % source
+            top.DeleteFolder(srcfld, 0, None, DEL_FOLDERS)
         except:
+            print "Cannot delete source folder '%s'" % source
             return
     return len(entryids)
 
@@ -169,7 +166,10 @@ def main(argv = None):
 
     for linenum, line in enumerate(folders):
         if linenum == 0: continue
-        source, dest = line.strip().split(",")
+        try:
+            source, dest = line.strip().split(",")
+        except ValueError, e:
+            print "Error on line %d, %s" % (linenum, e)
         if not source or not dest:
             print "Error on line %d" % linenum
             continue
