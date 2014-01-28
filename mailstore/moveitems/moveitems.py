@@ -69,7 +69,7 @@ def DataMover(ipmsub, source, destination, delete = 0):
         print "Destination folder '%s' does not exist (no messages moved)!" % destination
         return
     if entryids:
-        print "Copying %d messages from folder '%s' to folder '%s'" % (len(entryids), source, destination)
+        print "Moving %d messages from folder '%s' to folder '%s'" % (len(entryids), source, destination)
         top.CopyMessages(entryids, IID_IMAPIFolder, destfolder, 0, None, MESSAGE_MOVE)
     else:
         print "No messages to copy for folder '%s'" % source
