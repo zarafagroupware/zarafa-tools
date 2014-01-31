@@ -26,3 +26,7 @@ Usage:
 check-out-of-office.py
 =====
 Creates list of all users with a simple false/true message concerning the out of office message state.
+
+process_meetingsrequests.php
+=====
+Enters meeting requests from the root of the inbox as tentative in the users default calendar.
