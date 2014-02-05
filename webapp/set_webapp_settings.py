@@ -24,7 +24,7 @@ def set_settings():
 
         try:
                 settings = st.OpenProperty(PR_EC_WEBACCESS_SETTINGS_JSON, IID_IStream, 0, MAPI_MODIFY)
-                data = settings.Read(40960)
+                data = settings.Read(33554432)
         except:
                 print 'User has not used WebApp yet, no settings property exists.'
 
