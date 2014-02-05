@@ -13,10 +13,22 @@ def backup_settings():
         settings = None
         data = None
 
+        username=sys.argv[1]
+        filename=username+'.json'
+
         PR_EC_WEBACCESS_SETTINGS_JSON = PROP_TAG(PT_STRING8, PR_EC_BASE+0x72)
 
-        s = OpenECSession(sys.argv[1], '', 'file:///var/run/zarafa')
-        st = GetDefaultStore(s)
+        try:
+                s = OpenECSession(sys.argv[1], '', 'file:///var/run/zarafa')
+                st = GetDefaultStore(s)
+
+        except MAPIErrorNotFound:
+                print 'User '+username+' has no user store'
+                return
+
+        except MAPIErrorLogonFailed:
+                print 'User '+username+' not found'
+                return
 
         try:
                 settings = st.OpenProperty(PR_EC_WEBACCESS_SETTINGS_JSON, IID_IStream, 0, 0)
@@ -27,9 +39,6 @@ def backup_settings():
         if not data:
                 data = 'No settings present.'
         else:
-                username=sys.argv[1]
-                filename=username+'.json'
-
                 jsondata=json.loads(data)
 
                 print 'Backing up settings for '+username+' to '+filename
