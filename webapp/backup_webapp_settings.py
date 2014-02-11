@@ -2,8 +2,12 @@
 
 from MAPI import *
 from MAPI.Util import *
-import json
 import sys
+
+try:
+        import json
+except ImportError:
+        import simplejson as json
 
 def check_input():
         if len(sys.argv) < 2:
