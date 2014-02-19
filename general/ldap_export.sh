@@ -2,19 +2,19 @@
 # http://www.zarafa.com/wiki/index.php/Create_LDAP_Export
 #
 
-function trim () {
+trim () {
   R=`echo $(sed -e 's/^[[:space:]]*//' <<<"$1")`
   echo "$R"
 }
 
-function get_config_value () {
+get_config_value () {
   CFG_FILE=$1
   CFG_OPTION=$2
   RETVAL=`grep ^${CFG_OPTION} ${CFG_FILE} | sed -e 's/=/#/' | awk -F"#" {'print $2'} | sed -e 's/\"//g'`
   echo `trim "${RETVAL}"`
 }
 
-function print_help () {
+print_help () {
   echo "Start the script with no options to create a full ldap export from the"
   echo "configured zarafa search base."
   echo
