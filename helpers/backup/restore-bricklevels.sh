@@ -18,7 +18,7 @@ do
    if [ -e $user.index.zbk ];
    then
        echo Importing bricklevel for user: $user
-       echo $RESTORE $user
+       $RESTORE $user
    else
        echo Cannot find bricklevel for user: $user, skipping.
    fi
