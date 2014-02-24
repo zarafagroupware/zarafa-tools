@@ -1,6 +1,14 @@
 #!/usr/bin/env bash
+# Note : Even when the kyoto files are consistent this is not a guarantee that the keys have been written directly.
+
+if [ ! -e /etc/zarafa/search.cfg ]
+    then
+        echo No zarafa search.cfg found
+        exit 1
+fi
 
 SEARCHFOL=$(grep ^index_path /etc/zarafa/search.cfg | awk '{print $3}')
+
 if ( ! which kctreemgr > /dev/null 2>&1  )
      then
         echo Cannot find kctreemgr.
