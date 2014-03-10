@@ -30,10 +30,20 @@ https://community.zarafa.com/pg/plugins/project/6450/developer/milo/zarafa-webap
 
 backup\_webapp\_settings.py
 =====
-Backs up a users webapp settings, keep in mind these do not include the recipient auto completion list!  
+Back up user's webapp settings, keep in mind these do not include the recipient auto completion list!  
 Usage: ./backup\_webapp\_settings.py username
 
-set\_webapp\_settings.py
+restore\_webapp\_settings.py
+=====
+Restore a user's webapp settings.
+Usage: ./backup\_webapp\_settings.py username
+
+enable\_webapp\_shortcuts.py
 =====
 Enables the keyboard shortcuts for the specified user.  
-Usage: ./set\_webapp\_settings.py username
+Usage: ./enable\_webapp\_shortcuts.py username
+
+disable\_webapp\_shortcuts.py
+=====
+Disables the keyboard shortcuts for the specified user.  
+Usage: ./disable\_webapp\_shortcuts.py username
