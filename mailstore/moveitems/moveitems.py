@@ -107,7 +107,7 @@ def main(argv = None):
         return 1
 
     # defaults
-    host = os.getenv("ZARAFA_SOCKET", "file:///var/run/zarafa")
+    host = "file:///var/run/zarafa"
     sslkey_file = None
     sslkey_pass = None
     username = None
