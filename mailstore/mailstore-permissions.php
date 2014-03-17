@@ -150,7 +150,7 @@ if(isset($inboxprops[PR_ADDITIONAL_REN_ENTRYIDS]))
 // Resolve user from GAB
 $id = resolve($session, $groupname);
 
-// Permissions configuration
+// Permission schemes
 //
 // State 1 is 'new', so it will only be added if there is no pre-existing rule.
 //
@@ -179,7 +179,7 @@ $perm_alldelall = array("userid" => $id, "type" => 2, "rights" => 1145, "state" 
  * 2 - Outbox
  * 3 - Inbox
  * 4 - Tasks
- * 5 - Calendar
+ * 5 - Contacts
  * 6 - Notes
  * 7 - Journal
  * 8 - Calendar
@@ -195,19 +195,41 @@ SetSecurity($userstore, "", array($perm_foldervisible));
 // stating that the 'free busy information could not be updated' in Outlook.
 // SetSecurity($userstore, $freebusy, array($perm_read));
 
-// Set other folders invisible
+// Examples:
+//
+// SetSecurity consists of the following 3 parameters:
+// - $userstore, no need to change this.
+// - $folderentryids[x] this is the folder as shown below
+// - permission variable, as shown under permission schemes
+//
+// Deleted Items
 //SetSecurity($userstore, $folderentryids[0], array($perm_folderinvisible));
+//
+// Sent Items
 //SetSecurity($userstore, $folderentryids[1], array($perm_folderinvisible));
+//
+// Outbox
 //SetSecurity($userstore, $folderentryids[2], array($perm_folderinvisible));
+//
+// Inbox
 //SetSecurity($userstore, $folderentryids[3], array($perm_folderinvisible));
+//
+// Tasks
 //SetSecurity($userstore, $folderentryids[4], array($perm_folderinvisible));
+//
+// Contacts
 //SetSecurity($userstore, $folderentryids[5], array($perm_folderinvisible));
+//
+// Notes
 //SetSecurity($userstore, $folderentryids[6], array($perm_folderinvisible));
+//
+// Journal
 //SetSecurity($userstore, $folderentryids[7], array($perm_folderinvisible));
+//
+// Calendar
 //SetSecurity($userstore, $folderentryids[9], array($perm_folderinvisible));
+//
+// Drafts
 //SetSecurity($userstore, $folderentryids[10], array($perm_folderinvisible));
-
-// Set calendar to be readable for everyone.
-SetSecurity($userstore, $folderentryids[8], array($perm_read));
 
 ?>
