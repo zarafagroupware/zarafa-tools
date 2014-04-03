@@ -3,6 +3,10 @@ fix-ipm-subtree.py
 Corrects the entryid of the PR\_IPM\_SUBTREE\_ENTRYID property inside of a users store.  
 This property is required for a users store to properly display all folders.
 
+foldernames.php
+=====
+Change language of default mapi folders, rename folders to a new locale.
+
 foldersize.php
 =====
 Displays the size per folder for a users mailstore.
