@@ -26,6 +26,7 @@ print_help () {
   echo -e "  -o [value]\t\tOverride ldap_page_size with [value]"
   echo
   echo "Options without parameters:"
+  echo -e "  -a\tDo an anonymous bind"
   echo -e "  -i\tIgnore ldap_page_size config option in Zarafa ldap config"
   echo -e "  -p\tPrompt on every ldap page when needed"
   echo -e "  -s\tShows used ldapsearch command at the end of the execution"
@@ -54,9 +55,15 @@ IGNORE_PAGESIZE=0
 OVERRIDE_PAGESIZE=0
 PAGE_PROMPT="noprompt"
 WRAP=1
+ANON=0
 
 function gen_ldap_cmd () {
-  echo 'ldapsearch '${EXT}' -h '"${LDAP_HOST}"' -p '${LDAP_PORT}' -D '"\"${LDAP_USER}\""' -x -w '"${LDAP_PASS}"' -b '"${LDAP_BASE}"
+
+	if [ "$ANON" -eq 1 ]; then
+		echo 'ldapsearch '${EXT}' -h '"${LDAP_HOST}"' -p '${LDAP_PORT}' -x -b '"${LDAP_BASE}"
+	else
+		echo 'ldapsearch '${EXT}' -h '"${LDAP_HOST}"' -p '${LDAP_PORT}' -D '"\"${LDAP_USER}\""' -x -w '"${LDAP_PASS}"' -b '"${LDAP_BASE}"
+	fi
 }
 
 
@@ -143,6 +150,9 @@ while (( "$#" )); do
     "-w")
 	WRAP=0
 	shift
+	;;
+    "-a")
+	ANON=1
 	;;
     "-h")
 	print_help
