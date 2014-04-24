@@ -1,6 +1,4 @@
 #!/bin/bash
-# http://www.zarafa.com/wiki/index.php/Create_LDAP_Export
-#
 
 trim () {
   R=`echo $(sed -e 's/^[[:space:]]*//' <<<"$1")`
