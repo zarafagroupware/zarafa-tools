@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# TODO:
+# - add support for ldap_uri
+
 trim () {
   R=`echo $(sed -e 's/^[[:space:]]*//' <<<"$1")`
   echo "$R"
