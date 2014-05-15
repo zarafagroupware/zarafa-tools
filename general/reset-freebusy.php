@@ -1,5 +1,5 @@
 #!/usr/bin/php
-<?
+<?php
 /* reset-freebusy.php
  *
  * Updates all users' free/busy information
