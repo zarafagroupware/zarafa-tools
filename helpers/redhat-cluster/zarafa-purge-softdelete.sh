@@ -4,7 +4,7 @@
 
 # Requirements:
 # - Red Hat Cluster
-# - xmlscarlet installed
+# - xmlstarlet installed
 
 # Configuration
 SOFTDELETE_DAYS=30
