@@ -46,5 +46,6 @@ class UUDecode(plugintemplates.IMapiDAgentPlugin):
                 stream.Write(('\n'.join(uulines)+'\n').decode('uu'))
                 attach.SaveChanges(0)
             message.SetProps([SPropValue(PR_BODY, '\r\n'.join(body2))])
+            message.Commit(0)
             message.SaveChanges(0)
         return plugintemplates.MP_CONTINUE,
