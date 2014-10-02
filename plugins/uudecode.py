@@ -30,7 +30,7 @@ class UUDecode(plugintemplates.IMapiDAgentPlugin):
                     body2.append(line)
             elif state == STATE_UU:
                 uulines.append(line)
-                if line == 'end' and lines[i-1] == '`':
+                if line == 'end' and lines[i-1] == '`' or line == 'end':
                     attachments.append(uulines)
                     body2.extend(['', SNIP_MSG, ''])
                     state = STATE_TEXT
