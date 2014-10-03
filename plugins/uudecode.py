@@ -19,7 +19,7 @@ class UUDecode(plugintemplates.IMapiDAgentPlugin):
         body2 = []
         attachments = []
         uulines = []
-        print "start"
+        
         for i in range(len(lines)): # no 'enumerate' for python 2.4 compatibility
             line = lines[i]
             if state == STATE_TEXT:
