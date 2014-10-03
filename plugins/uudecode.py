@@ -19,11 +19,12 @@ class UUDecode(plugintemplates.IMapiDAgentPlugin):
         body2 = []
         attachments = []
         uulines = []
+        print "start"
         for i in range(len(lines)): # no 'enumerate' for python 2.4 compatibility
             line = lines[i]
             if state == STATE_TEXT:
                 split = line.split(' ')
-                if len(split) == 3 and split[0] == 'begin':
+                if len(split) >= 3 and split[0] == 'begin':
                     state = STATE_UU
                     uulines = [line]
                 else:
@@ -40,8 +41,9 @@ class UUDecode(plugintemplates.IMapiDAgentPlugin):
             self.logger.logDebug(LOG_MSG % len(attachments))
             for uulines in attachments:
                 (id, attach) = message.CreateAttach(None, 0)
-                self.logger.logDebug('filename: %s' % uulines[0].split(' ')[2])
-                attach.SetProps([SPropValue(PR_DISPLAY_NAME, uulines[0].split(' ')[2]), SPropValue(PR_ATTACH_METHOD, 1)])
+                fname = uulines[0].split(' ', 2)[2]
+                self.logger.logDebug('filename: %s' % fname)
+                attach.SetProps([SPropValue(PR_DISPLAY_NAME,fname ), SPropValue(PR_ATTACH_METHOD, 1)])
                 stream = attach.OpenProperty(PR_ATTACH_DATA_BIN, IID_IStream, 0, MAPI_MODIFY | MAPI_CREATE)
                 stream.Write(('\n'.join(uulines)+'\n').decode('uu'))
                 attach.SaveChanges(0)
