@@ -26,7 +26,7 @@ def do_folder(folderid):
                 prefix = ""
                 for i in range(1, level):
                         prefix = prefix + "-"
-                print prefix + row[0].Value
+                print prefix, row[0].Value
 
                 do_folder(row[1].Value)
         level -= 1
