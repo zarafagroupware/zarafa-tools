@@ -1,5 +1,4 @@
 #!/usr/bin/python -u
-# m.verwijs@zarafa.com 
 
 # This deletes rss feeds in the main folder. It does not see subfolders (yet). 
 # Requires zarafa >= 6.40.11, or 7.x
