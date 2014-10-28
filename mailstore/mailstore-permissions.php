@@ -227,9 +227,12 @@ SetSecurity($userstore, "", array($perm_foldervisible));
 //SetSecurity($userstore, $folderentryids[7], array($perm_folderinvisible));
 //
 // Calendar
-//SetSecurity($userstore, $folderentryids[9], array($perm_folderinvisible));
+//SetSecurity($userstore, $folderentryids[8], array($perm_folderinvisible));
 //
 // Drafts
+//SetSecurity($userstore, $folderentryids[9], array($perm_folderinvisible));
+//
+// Junk
 //SetSecurity($userstore, $folderentryids[10], array($perm_folderinvisible));
 
 ?>
