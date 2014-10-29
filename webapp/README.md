@@ -47,3 +47,8 @@ disable\_webapp\_shortcuts.py
 =====
 Disables the keyboard shortcuts for the specified user.  
 Usage: ./disable\_webapp\_shortcuts.py username
+
+restore\_webapp-settings.py
+=====
+Restores a users webapp settings.
+Usage: ./restore\_webapp-settings.py username
