@@ -50,3 +50,10 @@ This script is for licensed installations for use with zarafa-restore.
 It allows you to restore a public stores bricklevel backup.  
 Usage: ./full-restore-public.sh <bricklevel name> e.g. Public.
 
+list-userguids.py
+=====
+Lists user guids for all or given user.
+
+mailstore-permissions.php
+=====
+Provides the option to set permissions on mailstores.
