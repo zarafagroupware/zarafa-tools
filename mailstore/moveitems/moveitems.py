@@ -18,7 +18,7 @@ def print_help():
     print ""
     print " --help                      Displays this information"
     print " -d <1|0>, --delete <1|0>    Delete the source folder after moving the data to the destination folder"
-    print " -c <1|0>, --create-missing <1|0>   Specify is missing destination folder should be created or not (only works for generic folders!)"
+    print " -c <1|0>, --create-missing <1|0>   Specify if the missing destination folder should be created or not (only works for generic folders!)"
     print " -h, --host                  Hostname to connect to, e.g. https://localhost:237/zarafa"
     print " -s, --sslkey-file           SSL certificate"
     print " -p, --sslkey-pass           SSL password"
