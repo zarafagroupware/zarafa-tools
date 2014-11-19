@@ -18,6 +18,7 @@ def print_help():
     print ""
     print " --help                      Displays this information"
     print " -d <1|0>, --delete <1|0>    Delete the source folder after moving the data to the destination folder"
+    print " -c <1|0>, --create-missing <1|0>   Specify is missing destination folder should be created or not (only works for generic folders!)"
     print " -h, --host                  Hostname to connect to, e.g. https://localhost:237/zarafa"
     print " -s, --sslkey-file           SSL certificate"
     print " -p, --sslkey-pass           SSL password"
@@ -45,7 +46,7 @@ def FindFolder(folder, name):
 
     return folderentryid
 
-def DataMover(ipmsub, source, destination, delete = 0):
+def DataMover(ipmsub, source, destination, delete = 0, createmissing = 0):
     srcfld = FindFolder(ipmsub, source)
     dstfld = FindFolder(ipmsub, destination)
 
@@ -55,9 +56,6 @@ def DataMover(ipmsub, source, destination, delete = 0):
     if not srcfld:
         print "Source folder '%s' does not exist!" % source
         return
-    if not dstfld:
-        print "Destination folder '%s' does not exist!" % destination
-        return
 
     # Messages
     top = ipmsub.OpenEntry(srcfld, None, MAPI_MODIFY)
@@ -65,14 +63,21 @@ def DataMover(ipmsub, source, destination, delete = 0):
     table.SetColumns([PR_ENTRYID], 0)
     entryids = [src[0].Value for src in table.QueryRows(-1, 0)]
     destfolder = ipmsub.OpenEntry(dstfld, None, MAPI_MODIFY)
-    if not destfolder:
-        print "Destination folder '%s' does not exist (no messages moved)!" % destination
-        return
+    if not dstfld:
+        if int(createmissing) and entryids:
+            print "Destination folder '%s' does not exist, creating under user store..." % destination
+            ipmsub.CreateFolder(FOLDER_GENERIC, destination, "Created by Zarafa moveitems.py", None,  0)
+            dstfld = FindFolder(ipmsub, destination)
+            destfolder = ipmsub.OpenEntry(dstfld, None, MAPI_MODIFY)
+        else:
+            print "Destination folder '%s' does not exist (no messages moved)!" % destination
+            return
+
     if entryids:
         print "Moving %d messages from folder '%s' to folder '%s'" % (len(entryids), source, destination)
         top.CopyMessages(entryids, IID_IMAPIFolder, destfolder, 0, None, MESSAGE_MOVE)
     else:
-        print "No messages to copy for folder '%s'" % source
+        print "No messages to move for folder '%s'" % source
     # Folders
     ftable = top.GetHierarchyTable(0)
     ftable.SetColumns([PR_ENTRYID], 0)
@@ -99,7 +104,7 @@ def main(argv = None):
         argv = sys.argv
 
     try:
-        opts, args = getopt.gnu_getopt(argv, "h:s:p:u:d:he", ["host=", "sslkey-file=", "sslkey-pass=", "user=", "delete=", "help"])
+        opts, args = getopt.gnu_getopt(argv, "h:s:p:u:d:c:he", ["host=", "sslkey-file=", "sslkey-pass=", "user=", "delete=", "create-missing=", "help"])
     except getopt.GetoptError, err:
         print str(err)
         print ""
@@ -111,7 +116,8 @@ def main(argv = None):
     sslkey_file = None
     sslkey_pass = None
     username = None
-    delete = 0 
+    delete = 0
+    createmissing = 0
 
     for o, a in opts:
         if o in ("-h", "--host"):
@@ -124,6 +130,8 @@ def main(argv = None):
             username = a
         elif o in ("-d", "--delete"):
             delete = a
+        elif o in ("-c", "--create-missing"):
+            createmissing = a
         elif o in ("--help"):
             print_help()
             return 0
@@ -174,7 +182,7 @@ def main(argv = None):
             print "Error on line %d" % linenum
             continue
 
-        DataMover(sub, source, dest, delete)
+        DataMover(sub, source, dest, delete, createmissing)
 
 if __name__ == "__main__":
     locale.setlocale(locale.LC_ALL, "")
