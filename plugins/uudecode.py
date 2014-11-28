@@ -6,7 +6,7 @@ convert uu-encoded elements in body to separate attachments
 
 '''
 
-SNIP_MSG = '(uu-encoded text converted to attachment)'
+SNIP_MSG = '(uuencoded file(s) converted to attachment(s))'
 LOG_MSG = 'found %d uuencoded element(s) in body, converting to attachment(s)'
 
 STATE_TEXT, STATE_UU = 0, 1
@@ -44,6 +44,7 @@ class UUDecode(plugintemplates.IMapiDAgentPlugin):
                 fname = uulines[0].split(' ', 2)[2]
                 self.logger.logDebug('filename: %s' % fname)
                 attach.SetProps([SPropValue(PR_DISPLAY_NAME,fname ), SPropValue(PR_ATTACH_METHOD, 1)])
+                attach.SetProps([SPropValue(PR_ATTACH_FILENAME,fname ), SPropValue(PR_ATTACH_METHOD, 1)])
                 stream = attach.OpenProperty(PR_ATTACH_DATA_BIN, IID_IStream, 0, MAPI_MODIFY | MAPI_CREATE)
                 stream.Write(('\n'.join(uulines)+'\n').decode('uu'))
                 attach.SaveChanges(0)
