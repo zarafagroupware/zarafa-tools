@@ -57,3 +57,11 @@ Lists user guids for all or given user.
 mailstore-permissions.php
 =====
 Provides the option to set permissions on mailstores.
+
+list-folders-folderid.py
+=====
+List folders with their respective folderid.
+
+migrate.py
+=====
+Migrate the users mail store to the Inbox -> Archives folder of another account.
