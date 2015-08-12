@@ -52,3 +52,10 @@ restore\_webapp-settings.py
 =====
 Restores a users webapp settings.
 Usage: ./restore\_webapp-settings.py username
+
+smime\-fix\-case.py
+=====
+The WebApp smime plugin could save some of the certificate attributes with an incorrect capitalization (Webapp.Security.Public whereas WebApp.Security.Public should have been used).
+This causes no issues for the smime plugin itself but it could make things difficult when using scripts to import or export certificates.
+This script will fix the attributes for all local users
+Requires python-zarafa which is included from Zarafa 7.2
