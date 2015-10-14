@@ -114,7 +114,7 @@ do
 	# connect to mysql using mysqldump for select mysql database
 	# and pipe it out to gz file in backup dir :)
         $MYSQLDUMP $DUMP_OPTS -u $MyUSER -h $MyHOST -p$MyPASS $db | $GZIP -9 > "$FILE.gz"
-        ERR=$?
+        ERR=${PIPESTATUS[0]}
         if [ $ERR != 0 ]; then
 	  NOTIFY_MESSAGE="Error: $ERR, while backing up database: $db"	
 	else
