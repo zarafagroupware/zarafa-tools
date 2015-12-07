@@ -6,6 +6,11 @@ $l_sServer = 'file:///var/run/zarafa';
 // enter the number of days here, messages before this number of days will get deleted 
 $daysBeforeDeleted = 10;
 
+if (!extension_loaded('mapi')){
+        print "Please enable php-mapi module for commandline usage";
+            exit;
+}
+
 define('PT_BOOLEAN'                              , 11);    /* 16-bit boolean (non-zero true) */
 define('PT_STRING8'                              , 30);    /* Null terminated 8-bit character string */
 define('PT_TSTRING'                              ,PT_STRING8);
