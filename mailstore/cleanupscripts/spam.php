@@ -1,9 +1,15 @@
+#!/usr/bin/env php
 <?php
 $l_sUsername = $argv[1];
 $l_sPassword = '';
 $l_sServer = 'file:///var/run/zarafa';
 // enter the number of days here, messages before this number of days will get deleted 
 $daysBeforeDeleted = 10;
+
+if (!extension_loaded('mapi')){
+    print "Please enable php-mapi module for commandline usage";
+    exit;
+}
 
 define('PT_BOOLEAN'                              , 11);    /* 16-bit boolean (non-zero true) */
 define('PT_STRING8'                              , 30);    /* Null terminated 8-bit character string */
@@ -19,11 +25,19 @@ define('PR_CREATION_TIME'                             ,mapi_prop_tag(PT_SYSTIME,
 
 
 function greaterDate($start_date, $daysBeforeDeleted){
-	return (strtotime($start_date)-strtotime(date('Y-m-d G:i:s', strtotime("-$daysBeforeDeleted days"))) < 0) ? 1 : 0;
+    return (strtotime($start_date)-strtotime(date('Y-m-d G:i:s', strtotime("-$daysBeforeDeleted days"))) < 0) ? 1 : 0;
 }
 
+// Add the SVN revision number to the version
+$mapi_version = str_replace('-', '.', phpversion('mapi'));
+
 // Log in to Zarafa server
-$l_rSession = mapi_logon_zarafa($l_sUsername, $l_sPassword, $l_sServer);
+if (version_compare($mapi_version, '7.2.0.46424', '>=')) {
+        $l_rSession = mapi_logon_zarafa($l_sUsername, $l_sPassword, $l_sServer, NULL, NULL, NULL, NULL);
+    }
+    else {
+        $l_rSession = mapi_logon_zarafa($l_sUsername, $l_sPassword, $l_sServer);
+    }
 echo ((mapi_last_hresult()==0)?"Logged in successfully":"Some error in login")."\n";
 
 // Get a table with the message stores within this session
@@ -37,51 +51,51 @@ echo ((mapi_last_hresult()==0)?"Fetching Junk Folder...":"Some error in fetching
 $l_bbnEntryID = false;    // Either boolean or binary
 // Loop through returned rows
 for($i=0;$i<count($l_aTableRows);$i++){
-	// Check to see if this entry is the default store
-	if(isset($l_aTableRows[$i][PR_DEFAULT_STORE]) && $l_aTableRows[$i][PR_DEFAULT_STORE] == true){
-		$storeEntryId = $l_aTableRows[$i][PR_ENTRYID];
-		break;
-	}
+    // Check to see if this entry is the default store
+    if(isset($l_aTableRows[$i][PR_DEFAULT_STORE]) && $l_aTableRows[$i][PR_DEFAULT_STORE] == true){
+        $storeEntryId = $l_aTableRows[$i][PR_ENTRYID];
+        break;
+    }
 }
 
 // check if default root store's entry id found
 if($storeEntryId){
 
-	$store = mapi_openmsgstore($l_rSession, $storeEntryId);
+    $store = mapi_openmsgstore($l_rSession, $storeEntryId);
 
-	$root = mapi_msgstore_openentry($store, null);
+    $root = mapi_msgstore_openentry($store, null);
 
-	$spamStoreProps = mapi_getprops($root, array(PR_ADDITIONAL_REN_ENTRYIDS));
+    $spamStoreProps = mapi_getprops($root, array(PR_ADDITIONAL_REN_ENTRYIDS));
 
-	$spamFolder = mapi_msgstore_openentry($store,$spamStoreProps[PR_ADDITIONAL_REN_ENTRYIDS][4]);
+    $spamFolder = mapi_msgstore_openentry($store,$spamStoreProps[PR_ADDITIONAL_REN_ENTRYIDS][4]);
 
-	$table = mapi_folder_getcontentstable($spamFolder);
+    $table = mapi_folder_getcontentstable($spamFolder);
 
-	$spamRows = mapi_table_queryallrows($table, array(PR_ENTRYID, PR_CREATION_TIME));
-	echo ((mapi_last_hresult()==0)?"Fetching messages from Junk Folder...":"Some error in fetching...")."\n";
-	if(count($spamRows) > 0){
-		$spamEntryIds = array();
-		echo "\nTotal messages in Junk folder found are : ".count($spamRows)."\n";
-		for($i=0; $i<count($spamRows); $i++){
-			if(greaterDate(date("Y-m-d G:i:s", $spamRows[$i][PR_CREATION_TIME]), $daysBeforeDeleted)){
-				array_push($spamEntryIds, $spamRows[$i][PR_ENTRYID]);
-			}
-		}
-		
-		if(count($spamEntryIds) > 0){
-			echo "\nDeleting all ". count($spamEntryIds) . " message(s)...\n";
-			mapi_folder_deletemessages($spamFolder, $spamEntryIds);
-			
-			echo "<b>".((mapi_last_hresult()==0)?"\nHooray! there is no spam.":"Some error in deleting... There are still some spam messages.")."<b>\n";
-		}else{
-			echo "\n<b>No message found before ".$daysBeforeDeleted." days in Junk Folder.</b>";
-		}
+    $spamRows = mapi_table_queryallrows($table, array(PR_ENTRYID, PR_CREATION_TIME));
+    echo ((mapi_last_hresult()==0)?"Fetching messages from Junk Folder...":"Some error in fetching...")."\n";
+    if(count($spamRows) > 0){
+        $spamEntryIds = array();
+        echo "\nTotal messages in Junk folder found are : ".count($spamRows)."\n";
+        for($i=0; $i<count($spamRows); $i++){
+            if(greaterDate(date("Y-m-d G:i:s", $spamRows[$i][PR_CREATION_TIME]), $daysBeforeDeleted)){
+                array_push($spamEntryIds, $spamRows[$i][PR_ENTRYID]);
+            }
+        }
+        
+        if(count($spamEntryIds) > 0){
+            echo "\nDeleting all ". count($spamEntryIds) . " message(s)...\n";
+            mapi_folder_deletemessages($spamFolder, $spamEntryIds);
+            
+            echo "".((mapi_last_hresult()==0)?"\nHooray! there is no spam.":"Some error in deleting... There are still some spam messages.")."\n";
+        }else{
+            echo "\nNo message found before ".$daysBeforeDeleted." days in Junk Folder.";
+        }
 
-	}else{
-		echo "\n<b>No message found in Junk Folder.</b>";
-	}
+    }else{
+        echo "\nNo message found in Junk Folder.";
+    }
 }else{
-	echo "No default store found... Terminating process.\n";
+    echo "No default store found... Terminating process.\n";
 }
 ?>
 

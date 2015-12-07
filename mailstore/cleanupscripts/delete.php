@@ -1,3 +1,4 @@
+#!/usr/bin/env php
 <?php
 $l_sUsername = $argv[1];
 $l_sPassword = '';
@@ -16,11 +17,19 @@ define('PR_IPM_WASTEBASKET_ENTRYID'                   ,mapi_prop_tag(PT_BINARY, 
 define('PR_CREATION_TIME'                             ,mapi_prop_tag(PT_SYSTIME,     0x3007));
 
 function greaterDate($start_date, $daysBeforeDeleted){
-	return (strtotime($start_date)-strtotime(date('Y-m-d G:i:s', strtotime("-$daysBeforeDeleted days"))) < 0) ? 1 : 0;
+    return (strtotime($start_date)-strtotime(date('Y-m-d G:i:s', strtotime("-$daysBeforeDeleted days"))) < 0) ? 1 : 0;
 }
 
+// Add the SVN revision number to the version
+$mapi_version = str_replace('-', '.', phpversion('mapi'));
+
 // Log in to Zarafa server
-$l_rSession = mapi_logon_zarafa($l_sUsername, $l_sPassword, $l_sServer);
+if (version_compare($mapi_version, '7.2.0.46424', '>=')) {
+        $l_rSession = mapi_logon_zarafa($l_sUsername, $l_sPassword, $l_sServer, NULL, NULL, NULL, NULL);
+    }
+    else {
+        $l_rSession = mapi_logon_zarafa($l_sUsername, $l_sPassword, $l_sServer);
+    }
 echo ((mapi_last_hresult()==0)?"Logged in successfully":"Some error in login")."\n";
 
 // Get a table with the message stores within this session
@@ -35,47 +44,47 @@ $l_bbnEntryID = false;    // Either boolean or binary
 
 // Loop through returned rows
 for($i=0;$i<count($l_aTableRows);$i++){
-	// Check to see if this entry is the default store
-	if(isset($l_aTableRows[$i][PR_DEFAULT_STORE]) && $l_aTableRows[$i][PR_DEFAULT_STORE] == true){
-		$storeEntryId = $l_aTableRows[$i][PR_ENTRYID];
-		break;
-	}
+    // Check to see if this entry is the default store
+    if(isset($l_aTableRows[$i][PR_DEFAULT_STORE]) && $l_aTableRows[$i][PR_DEFAULT_STORE] == true){
+        $storeEntryId = $l_aTableRows[$i][PR_ENTRYID];
+        break;
+    }
 }
 
 // check if default root store's entry id found
 if($storeEntryId){
 
-	$store = mapi_openmsgstore($l_rSession, $storeEntryId);
-	
-	$delStoreProps = mapi_getprops($store, array(PR_IPM_WASTEBASKET_ENTRYID));
+    $store = mapi_openmsgstore($l_rSession, $storeEntryId);
+    
+    $delStoreProps = mapi_getprops($store, array(PR_IPM_WASTEBASKET_ENTRYID));
 
-	$deletedFolder = mapi_msgstore_openentry($store, $delStoreProps[PR_IPM_WASTEBASKET_ENTRYID]);
-	
-	$table = mapi_folder_getcontentstable($deletedFolder);
-	
-	$delRows = mapi_table_queryallrows($table, array(PR_ENTRYID, PR_CREATION_TIME));
-	echo ((mapi_last_hresult()==0)?"Fetching messages from Deleted Folder...":"Some error in fetching...")."\n";
-	if(count($delRows) > 0){
-		$delEntryIds = array();
-		echo 'Total messages in deleted folder found are : '.count($delRows)."\n";
-		for($i=0; $i<count($delRows); $i++){
-			if(greaterDate(date("Y-m-d G:i:s",$delRows[$i][PR_CREATION_TIME]),$daysBeforeDeleted)){
-				array_push($delEntryIds, $delRows[$i][PR_ENTRYID]);
-			}
-		}
-		if(count($delEntryIds) > 0){
-			echo "\nDeleting all ". count($delEntryIds) . " messages...\n";
-			mapi_folder_deletemessages($deletedFolder, $delEntryIds);
-			
-			echo "<b>".((mapi_last_hresult()==0)?"Successfully deleted all messages":"Some error in deleting... please try again later")."</b>\n";
-		}else{
-			echo "\n<b>No message found before ".$daysBeforeDeleted." days in Deleted Folder.</b>";
-		}
-	}else{
-		echo "\n<b>No message found in Deleted Folder.</b>";
-	}
+    $deletedFolder = mapi_msgstore_openentry($store, $delStoreProps[PR_IPM_WASTEBASKET_ENTRYID]);
+    
+    $table = mapi_folder_getcontentstable($deletedFolder);
+    
+    $delRows = mapi_table_queryallrows($table, array(PR_ENTRYID, PR_CREATION_TIME));
+    echo ((mapi_last_hresult()==0)?"Fetching messages from Deleted Folder...":"Some error in fetching...")."\n";
+    if(count($delRows) > 0){
+        $delEntryIds = array();
+        echo 'Total messages in deleted folder found are : '.count($delRows)."\n";
+        for($i=0; $i<count($delRows); $i++){
+            if(greaterDate(date("Y-m-d G:i:s",$delRows[$i][PR_CREATION_TIME]),$daysBeforeDeleted)){
+                array_push($delEntryIds, $delRows[$i][PR_ENTRYID]);
+            }
+        }
+        if(count($delEntryIds) > 0){
+            echo "\nDeleting all ". count($delEntryIds) . " messages...\n";
+            mapi_folder_deletemessages($deletedFolder, $delEntryIds);
+            
+            echo "".((mapi_last_hresult()==0)?"Successfully deleted all messages":"Some error in deleting... please try again later")."\n";
+        }else{
+            echo "\nNo message found before ".$daysBeforeDeleted." days in Deleted Folder.";
+        }
+    }else{
+        echo "\nNo message found in Deleted Folder.";
+    }
 }else{
-	echo "No default store found... Terminating process.\n";
+    echo "No default store found... Terminating process.\n";
 }
 ?>
 
