@@ -65,3 +65,9 @@ List folders with their respective folderid.
 migrate.py
 =====
 Migrate the users mail store to the Inbox -> Archives folder of another account.
+
+zarafa-clean-deleted-items.py
+====
+Clean up items from 'Deleted Items' older than x days.  
+Requires Zarafa 7.2 or higher or 7.1 with python-zarafa from https://github.com/zarafagroupware/python-zarafa
+
