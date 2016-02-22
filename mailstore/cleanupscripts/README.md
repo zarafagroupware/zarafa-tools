@@ -10,7 +10,8 @@ cleanup depends on a few Python libraries:
 
 * [python-zarafa](https://github.com/zarafagroupware/python-zarafa.git)
 * [python-mapi](https://download.zarafa.com/community/final/)
-* 
+ 
+
 Usage
 =====
 
