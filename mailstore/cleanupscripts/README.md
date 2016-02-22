@@ -6,7 +6,7 @@ The following scripts allow you to automatically delete all items older than x d
 Dependencies
 ============
 
-Zarapy depends on a few Python libraries:
+cleanup depends on a few Python libraries:
 
 * [python-zarafa](https://github.com/zarafagroupware/python-zarafa.git)
 * [python-mapi](https://download.zarafa.com/community/final/)
