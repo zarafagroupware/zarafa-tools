@@ -15,4 +15,4 @@ cleanup depends on a few Python libraries:
 Usage
 =====
 
-  python cleanup.py --user <user> --junk --wastebasker --days <days>
+  python cleanup.py --user <user> --junk --wastebasket --days <days>
