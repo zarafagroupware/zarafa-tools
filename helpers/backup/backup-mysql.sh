@@ -1,5 +1,5 @@
 #!/bin/bash
-# http://www.zarafa.com/wiki/index.php/Full_database_backup
+# http://wiki.zarafa.com/index.php/Full_database_backup
 
 # Modify the variables below to your need
 
